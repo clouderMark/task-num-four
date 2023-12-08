@@ -16,8 +16,9 @@ class User {
   }
 
   async getByEmail(email) {
-    const visited = this._getVisitDate();
-    const user = await UserMapping.findOneAndUpdate({ where: { email } }, visited, {returnDocument: 'after'});
+    const lastVisit = this._getVisitDate();
+    const user = await UserMapping.findOneAndUpdate({ email }, {lastVisit: {date: lastVisit.date}}, { returnDocument: 'after' });
+
     if (!user) {
       throw new Error('Пользователь не найдена в БД');
     }
@@ -26,17 +27,17 @@ class User {
 
   async create(data) {
     const { name, email, password } = data;
-    const check = await UserMapping.findOne({ where: { email } });
+    const check = await UserMapping.findOne({ email });
     if (check) {
       throw new Error('Пользователь уже существует');
     }
-    const visited = this._getVisitDate();
+    const lastVisit = this._getVisitDate();
     const status = this._getStatus(false);
     const user = await UserMapping.create({
       name,
       email,
       password,
-      visited,
+      lastVisit,
       status,
     });
     return user;

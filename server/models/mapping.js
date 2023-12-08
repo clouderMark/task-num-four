@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const visitedSchema = new Schema({
-  visited: { type: Date },
+  date: { type: Date },
 });
 
 const statusSchema = new Schema({
