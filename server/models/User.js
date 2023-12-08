@@ -3,7 +3,7 @@ import AppError from '../errors/AppError.js';
 
 class User {
   async getAll() {
-    const users = await UserMapping.find();
+    const users = await UserMapping.find({}, 'name lastVisit status');
     return users;
   }
 
