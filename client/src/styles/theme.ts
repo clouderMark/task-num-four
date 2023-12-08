@@ -82,7 +82,7 @@ export const theme = createTheme({
           height: '54px',
           padding: '25px',
           borderRadius: 0,
-          color: globalTheme.palette.fourth.main,
+          color: globalTheme.palette.third.main,
           fontWeight: 400,
           fontSize: '1.125rem',
           textTransform: 'none',
@@ -92,58 +92,6 @@ export const theme = createTheme({
           },
         },
       },
-      variants: [
-        {
-          props: {variant: 'contained', color: 'first'},
-          style: {
-            backgroundColor: globalTheme.palette.first.main,
-            color: globalTheme.palette.third.main,
-
-            '&:hover': {
-              backgroundColor: globalTheme.palette.first.dark,
-              color: globalTheme.palette.third.main,
-            },
-          },
-        },
-        {
-          props: {variant: 'contained', color: 'second'},
-          style: {
-            backgroundColor: globalTheme.palette.second.main,
-            color: '#292929',
-
-            '&:hover': {
-              backgroundColor: globalTheme.palette.third.main,
-            },
-          },
-        },
-        {
-          props: {variant: 'contained', color: 'third'},
-          style: {
-            backgroundColor: globalTheme.palette.third.main,
-            color: globalTheme.palette.first.main,
-            '&:hover': {
-              backgroundColor: globalTheme.palette.third.light,
-              color: globalTheme.palette.first.main,
-            },
-            '&:active': {
-              backgroundColor: globalTheme.palette.third.main,
-              color: globalTheme.palette.first.main,
-            },
-          },
-        },
-        {
-          props: {variant: 'outlined', color: 'first'},
-          style: {
-            backgroundColor: globalTheme.palette.third.main,
-            borderColor: globalTheme.palette.first.main,
-            color: globalTheme.palette.first.main,
-
-            '&:hover': {
-              backgroundColor: globalTheme.palette.third.light,
-            },
-          },
-        },
-      ],
     },
     MuiAppBar: {
       styleOverrides: {

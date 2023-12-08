@@ -1,20 +1,19 @@
 import {useEffect, FormEvent} from 'react';
 import {Box, Button, Card, Container, TextField, Typography} from '@mui/material';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import {EPath} from '../enums/EPath';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {selectUser} from '../redux/userSlice';
-import {useLoginUserMutation, useSignupUserMutation} from '../redux/userApi';
-import {showAlert} from '../redux/alertSlice';
+import {EPath} from '../../enums/EPath';
+import {useAppDispatch, useAppSelector} from '../../redux/hooks';
+import {selectUser} from '../../redux/userSlice';
+import {useLoginUserMutation, useSignupUserMutation} from '../../redux/userApi';
+import {showAlert} from '../../redux/alertSlice';
+import {styles} from './styles';
 
 const Login = () => {
   const {isAuth} = useAppSelector(selectUser);
   const navigate = useNavigate();
   const isLogin = useLocation().pathname === EPath.Login;
-  const [loginUser, {isError: isLoginError, error: loginError}] =
-    useLoginUserMutation();
-  const [signupUser, {isError: isRegisterError, error: registerError}] =
-    useSignupUserMutation();
+  const [loginUser, {isError: isLoginError, error: loginError}] = useLoginUserMutation();
+  const [signupUser, {isError: isRegisterError, error: registerError}] = useSignupUserMutation();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -50,8 +49,8 @@ const Login = () => {
 
   return (
     <>
-      <Container sx={{display: 'flex', justifyContent: 'center'}}>
-        <Card style={{width: '50%'}} sx={{p: 5, mb: 15}}>
+      <Container sx={styles.container}>
+        <Card sx={styles.card}>
           <Typography component="h3" sx={{mt: 'auto'}}>
             {isLogin ? 'Авторизация' : 'Регистрация'}
           </Typography>
@@ -59,8 +58,8 @@ const Login = () => {
             {!isLogin ? <TextField name="userName" sx={{mt: 3}} placeholder="Введите ваше имя..." /> : null}
             <TextField name="email" sx={{mt: 3}} placeholder="Введите ваш email..." />
             <TextField name="password" sx={{mt: 3}} placeholder="Введите ваш пароль..." />
-            <Box sx={{display: 'flex', justifyContent: 'space-between', mt: 2, mb: 2, p: 3}}>
-              <Button type="submit" color="first" variant="outlined">
+            <Box sx={styles.box}>
+              <Button type="submit" sx={styles.button} variant="outlined">
                 {isLogin ? 'Войти' : 'Регистрация'}
               </Button>
               <Typography sx={{mt: 'auto'}}>

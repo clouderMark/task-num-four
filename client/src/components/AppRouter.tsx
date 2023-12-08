@@ -2,7 +2,7 @@ import {Route, Routes} from 'react-router-dom';
 import {EPath} from '../enums/EPath';
 import {useAppSelector} from '../redux/hooks';
 import {selectUser} from '../redux/userSlice';
-import Login from '../views/Login';
+import Login from '../views/login/Login';
 import NotFound from '../views/NotFound';
 import Main from '../views/Main';
 
