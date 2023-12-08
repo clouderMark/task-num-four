@@ -7,6 +7,7 @@ import {useAppDispatch, useAppSelector} from './redux/hooks';
 import {getToken, selectUser} from './redux/userSlice';
 import Loader from './components/Loader';
 import AlertLine from './components/AlertLine/AlertLine';
+import Bar from './components/Bar';
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ const App = () => {
     <BrowserRouter>
       <CssBaseline />
       <Loader />
+      <Bar />
       <AppRouter />
       <AlertLine />
     </BrowserRouter>
