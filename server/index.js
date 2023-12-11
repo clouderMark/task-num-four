@@ -10,8 +10,7 @@ const PORT = process.env.PORT || 2900;
 const PASSWORD = process.env.PASSWORD;
 
 const app = express();
-const url = `mongodb+srv://charnysheuski:${PASSWORD}@users.7crj3y4.mongodb.net/?retryWrites=true&w=majority`;
-
+const url = `mongodb+srv://charnysheuski:${PASSWORD}@cluster0.dj3iezg.mongodb.net/?retryWrites=true&w=majority`;
 
 app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 app.use(express.json());
