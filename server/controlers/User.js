@@ -41,13 +41,17 @@ class User {
   }
 
   async check(req, res, next) {
-    const {id, email} = req.auth;
-    const token = makeJwt(id, email);
+    try {
+      const { id, email } = req.auth;
+      const token = makeJwt(id, email);
 
-    if (token) {
-      await UserModel.getByEmail(email);
+      if (token) {
+        await UserModel.getByEmail(email);
+      }
+      return res.json({ token });
+    } catch (e) {
+      next(AppError.badRequest(e.message));
     }
-    return res.json({ token });
   }
 
   async getAll(req, res, next) {
@@ -110,15 +114,11 @@ class User {
   async delete(req, res, next) {
     try {
       const { id } = req.body;
+
       if (!id.length) {
         throw new Error('Не указаны id пользователей');
       }
-      const users = id.reduce(async (acc, el) => {
-        const user = await UserModel.delete(el);
-        acc.push(user);
-
-        return acc;
-      });
+      const users = await UserModel.delete(id);
 
       res.json(users);
     } catch (e) {

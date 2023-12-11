@@ -3,7 +3,7 @@ import AppError from '../errors/AppError.js';
 
 class User {
   async getAll() {
-    const users = await UserMapping.find({}, 'name lastVisit status');
+    const users = await UserMapping.find({}, 'name lastVisit status createdAt');
     return users;
   }
 
@@ -32,7 +32,7 @@ class User {
       throw new Error('Пользователь уже существует');
     }
     const lastVisit = this._getVisitDate();
-    const status = this._getStatus(false);
+    const status = this._setStatus(false);
     const user = await UserMapping.create({
       name,
       email,
@@ -58,12 +58,13 @@ class User {
   }
 
   async delete(id) {
-    const user = await UserMapping.findByIdAndDelete(id);
-    if (!user) {
+    const users = await UserMapping.deleteMany({_id: id});
+
+    if (!users) {
       throw new Error('Пользователь не найдена в БД');
     }
 
-    return user;
+    return users;
   }
 
   async changeStatus(id) {
@@ -79,7 +80,7 @@ class User {
     return { date: new Date() };
   }
 
-  _getStatus(status) {
+  _setStatus(status) {
     return { blocked: status };
   }
 }
