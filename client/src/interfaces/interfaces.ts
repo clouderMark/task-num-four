@@ -6,7 +6,7 @@ export interface ICustomError {
 }
 
 interface IDate {
-  date: string,
+  date: string;
 }
 
 interface IBlocked {
@@ -19,13 +19,13 @@ interface IEmail {
 }
 
 export interface ILogin extends IEmail {
-  password: string,
+  password: string;
 }
 
 export interface IUser extends IEmail {
-  name: string,
-  lastVisit: IDate,
-  status: IBlocked,
+  name: string;
+  lastVisit: IDate;
+  status: IBlocked;
   createdAt: string;
 }
 
@@ -39,4 +39,9 @@ export interface IData {
 
 export interface IObject {
   [key: string]: string;
+}
+
+export interface IDelete {
+  acknowledged: boolean;
+  deletedCount: number;
 }

@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery, BaseQueryFn, FetchArgs} from '@reduxjs/toolkit/query/react';
-import {ICustomError, IData, ILogin, IUser} from '../interfaces/interfaces';
+import {ICustomError, IData, IDelete, ILogin, IUser} from '../interfaces/interfaces';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -69,7 +69,7 @@ export const userApi = createApi({
         headers: {authorization: `Bearer ${data.token}`},
       }),
     }),
-    deleteUsers: builder.mutation<IUser[], IAct>({
+    deleteUsers: builder.mutation<IDelete, IAct>({
       query: (data) => ({
         url: '/delete',
         method: 'DELETE',
