@@ -3,6 +3,7 @@ import {userApi} from './userApi';
 import {userSlice} from './userSlice';
 import {alertSlice} from './alertSlice';
 import {loaderSlice} from './loaderSlice';
+import {tableSlice} from './tableSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     alert: alertSlice.reducer,
     loader: loaderSlice.reducer,
+    table: tableSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

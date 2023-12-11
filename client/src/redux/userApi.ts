@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery, BaseQueryFn, FetchArgs} from '@reduxjs/toolkit/query/react';
-import {ICustomError, ILogin, IUser} from '../interfaces/interfaces';
+import {ICustomError, IData, ILogin, IUser} from '../interfaces/interfaces';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -12,7 +12,7 @@ interface IToken {
 }
 
 interface ISignup extends ILogin {
-  name: string,
+  name: string;
 }
 
 interface IUpdate extends ILogin, IToken {}
@@ -47,16 +47,24 @@ export const userApi = createApi({
         headers: {authorization: `Bearer ${token}`},
       }),
     }),
-    getAllUsers: builder.query<IUser[], string>({
-      query: (token) => ({
+    getAllUsers: builder.mutation<IData[], {token: string}>({
+      query: (data) => ({
         url: '/getall',
         method: 'GET',
-        headers: {authorization: `Bearer ${token}`},
+        headers: {authorization: `Bearer ${data.token}`},
       }),
+      transformResponse: (response: IUser[]): IData[] =>
+        response.map((el) => ({
+          name: el.name,
+          createdAt: new Date(el.createdAt),
+          lastVisit: new Date(el.lastVisit.date),
+          status: el.status.blocked,
+          id: el._id!,
+        })),
     }),
     updateUser: builder.mutation<IUser, IUpdate>({
       query: (data) => ({
-        url: `/update/:${data.id}`,
+        url: `/update/:${data._id}`,
         method: 'PUT',
         headers: {authorization: `Bearer ${data.token}`},
       }),
@@ -84,7 +92,7 @@ export const {
   useSignupUserMutation,
   useLoginUserMutation,
   useCheckUserMutation,
-  useGetAllUsersQuery,
+  useGetAllUsersMutation,
   useUpdateUserMutation,
   useDeleteUsersMutation,
   useChangeUsersStatusMutation,

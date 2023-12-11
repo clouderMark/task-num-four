@@ -5,17 +5,17 @@ export interface ICustomError {
   status: number;
 }
 
-interface IVisited {
-  visited: Date,
+interface IDate {
+  date: string,
 }
 
-interface IStatus {
+interface IBlocked {
   blocked: boolean;
 }
 
 interface IEmail {
   email: string;
-  id?: string;
+  _id?: string;
 }
 
 export interface ILogin extends IEmail {
@@ -24,8 +24,17 @@ export interface ILogin extends IEmail {
 
 export interface IUser extends IEmail {
   name: string,
-  lastVisit: IVisited,
-  status: IStatus,
+  lastVisit: IDate,
+  status: IBlocked,
+  createdAt: string;
+}
+
+export interface IData {
+  id: string;
+  name: string;
+  createdAt: Date;
+  lastVisit: Date;
+  status: boolean;
 }
 
 export interface IObject {
