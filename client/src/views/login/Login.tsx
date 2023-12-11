@@ -1,4 +1,4 @@
-import {useEffect, FormEvent} from 'react';
+import {useEffect, FormEvent, useState, ChangeEvent} from 'react';
 import {Box, Button, Card, Container, TextField, Typography} from '@mui/material';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {EPath} from '../../enums/EPath';
@@ -7,6 +7,9 @@ import {selectUser} from '../../redux/userSlice';
 import {useLoginUserMutation, useSignupUserMutation} from '../../redux/userApi';
 import {showAlert} from '../../redux/alertSlice';
 import {styles} from './styles';
+import {EName, IDefaultValid} from './types';
+import {defaultValid, defaultValue} from './defaultValue';
+import {isValid} from './isValid';
 
 const Login = () => {
   const {isAuth} = useAppSelector(selectUser);
@@ -15,6 +18,8 @@ const Login = () => {
   const [loginUser, {isError: isLoginError, error: loginError}] = useLoginUserMutation();
   const [signupUser, {isError: isRegisterError, error: registerError}] = useSignupUserMutation();
   const dispatch = useAppDispatch();
+  const [value, setValue] = useState(defaultValue);
+  const [valid, setValid] = useState<IDefaultValid>(defaultValid);
 
   useEffect(() => {
     if (isAuth) navigate(EPath.Main, {replace: true});
@@ -30,20 +35,30 @@ const Login = () => {
     }
   }, [isLoginError, isRegisterError]);
 
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue({...value, [event.target.name]: event.target.value});
+    setValid({...valid, [event.target.name]: isValid(event.target)});
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const target = event.currentTarget;
-    const email = target.email.value.trim();
-    const password = target.password.value.trim();
 
-    if (isLogin) {
-      await loginUser({email, password});
+    if (isLogin && valid[EName.EMAIL] && valid[EName.PASSWORD]) {
+      await loginUser({email: value[EName.EMAIL].trim(), password: value[EName.PASSWORD].trim()});
+    } else if (valid[EName.NAME] && valid[EName.PASSWORD] && valid[EName.EMAIL]) {
+      await signupUser({
+        name: value[EName.NAME].trim(),
+        email: value[EName.EMAIL].trim(),
+        password: value[EName.PASSWORD].trim(),
+      });
     } else {
-      const name = target.userName.value.trim();
+      const target = event.currentTarget;
 
-      console.log({name, email, password});
-
-      await signupUser({name, email, password});
+      setValid({
+        [EName.NAME]: isLogin ? true : isValid(target[EName.NAME]),
+        [EName.EMAIL]: isValid(target[EName.EMAIL]),
+        [EName.PASSWORD]: isValid(target[EName.PASSWORD]),
+      });
     }
   };
 
@@ -55,9 +70,32 @@ const Login = () => {
             {isLogin ? 'Авторизация' : 'Регистрация'}
           </Typography>
           <Box component="form" sx={{display: 'flex', flexDirection: 'column'}} onSubmit={handleSubmit}>
-            {!isLogin ? <TextField name="userName" sx={{mt: 3}} placeholder="Введите ваше имя..." /> : null}
-            <TextField name="email" sx={{mt: 3}} placeholder="Введите ваш email..." />
-            <TextField name="password" sx={{mt: 3}} placeholder="Введите ваш пароль..." />
+            {!isLogin ? (
+              <TextField
+                name={EName.NAME}
+                sx={{mt: 3}}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+                placeholder="Введите ваше имя..."
+                error={valid[EName.NAME] === false}
+                color={valid[EName.NAME] ? 'success' : 'primary'}
+              />
+            ) : null}
+            <TextField
+              name={EName.EMAIL}
+              sx={{mt: 3}}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+              placeholder="Введите ваш email..."
+              error={valid[EName.EMAIL] === false}
+              color={valid[EName.EMAIL] ? 'success' : 'primary'}
+            />
+            <TextField
+              name={EName.PASSWORD}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+              sx={{mt: 3}}
+              placeholder="Введите ваш пароль..."
+              error={valid[EName.PASSWORD] === false}
+              color={valid[EName.PASSWORD] ? 'success' : 'primary'}
+            />
             <Box sx={styles.box}>
               <Button type="submit" sx={styles.button} variant="outlined">
                 {isLogin ? 'Войти' : 'Регистрация'}
