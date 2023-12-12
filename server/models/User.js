@@ -26,6 +26,10 @@ class User {
     if (!user) {
       throw new Error('Пользователь не найдена в БД');
     }
+
+    if (user.status.blocked) {
+      throw new Error('Пользователь заблокирован');
+    }
     return user;
   }
 
