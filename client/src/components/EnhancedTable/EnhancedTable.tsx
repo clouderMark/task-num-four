@@ -34,7 +34,6 @@ function EnhancedTable() {
     id: string,
     state: string[],
     action: ActionCreatorWithPayload<string[]>,
-    reset: ActionCreatorWithPayload<string[]>,
   ) => {
     const selectedIndex = state.indexOf(id);
     let newSelected: string[] = [];
@@ -50,7 +49,6 @@ function EnhancedTable() {
     }
 
     dispatch(action(newSelected));
-    dispatch(reset([]));
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -90,7 +88,7 @@ function EnhancedTable() {
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        onClick={() => handleClick(row.id, selected, setSelected, setSelectedStatus)}
+                        onClick={() => handleClick(row.id, selected, setSelected)}
                         color="primary"
                         checked={isItemSelected}
                         inputProps={{
@@ -106,7 +104,7 @@ function EnhancedTable() {
                     <TableCell align="right">{row.status ? 'blocked' : 'active'}</TableCell>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        onClick={() => handleClick(row.id, statuses, setSelectedStatus, setSelected)}
+                        onClick={() => handleClick(row.id, statuses, setSelectedStatus)}
                         color="primary"
                         checked={isStatusSelected}
                         inputProps={{

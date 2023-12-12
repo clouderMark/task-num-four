@@ -18,11 +18,9 @@ function EnhancedTableHead() {
   const handleSelectAllClick = (
     event: React.ChangeEvent<HTMLInputElement>,
     action: ActionCreatorWithPayload<string[]>,
-    reset: ActionCreatorWithPayload<string[]>,
   ) => {
     if (event.target.checked) {
       dispatch(action(allId));
-      dispatch(reset([]));
 
       return;
     }
@@ -45,7 +43,7 @@ function EnhancedTableHead() {
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
-            onChange={(e) => handleSelectAllClick(e, setSelected, setSelectedStatus)}
+            onChange={(e) => handleSelectAllClick(e, setSelected)}
             inputProps={{
               'aria-label': 'select all users',
             }}
@@ -77,7 +75,7 @@ function EnhancedTableHead() {
             color="primary"
             indeterminate={statusSelected > 0 && statusSelected < rowCount}
             checked={rowCount > 0 && statusSelected === rowCount}
-            onChange={(e) => handleSelectAllClick(e, setSelectedStatus, setSelected)}
+            onChange={(e) => handleSelectAllClick(e, setSelectedStatus)}
             inputProps={{
               'aria-label': "select all user's status",
             }}

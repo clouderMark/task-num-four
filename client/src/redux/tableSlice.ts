@@ -40,6 +40,7 @@ export const tableSlice = createSlice({
     },
     setSelected: (state, action: PayloadAction<string[]>) => {
       state.selected = action.payload;
+      state.statuses = [];
     },
     setOrder: (state, action: PayloadAction<Order>) => {
       state.order = action.payload;
@@ -58,6 +59,7 @@ export const tableSlice = createSlice({
     },
     setSelectedStatus: (state, action: PayloadAction<string[]>) => {
       state.statuses = action.payload;
+      state.selected = [];
     },
     setChangeStatus: (state, action: PayloadAction<boolean>) => {
       state.isChange = action.payload;
