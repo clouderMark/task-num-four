@@ -30,11 +30,7 @@ function EnhancedTable() {
   const {selected, page, rowsPerPage, statuses} = useSelector(selectTable);
   const rows = useSelector(selectSortRows, shallowEqual);
 
-  const handleClick = (
-    id: string,
-    state: string[],
-    action: ActionCreatorWithPayload<string[]>,
-  ) => {
+  const handleClick = (id: string, state: string[], action: ActionCreatorWithPayload<string[]>) => {
     const selectedIndex = state.indexOf(id);
     let newSelected: string[] = [];
 
@@ -99,8 +95,8 @@ function EnhancedTable() {
                     <TableCell component="th" id={labelId} scope="row" padding="none">
                       {row.name}
                     </TableCell>
-                    <TableCell align="right">{row.createdAt.toDateString()}</TableCell>
-                    <TableCell align="right">{row.lastVisit.toDateString()}</TableCell>
+                    <TableCell align="right">{row.createdAt.toLocaleString('en-US', {hour12: false})}</TableCell>
+                    <TableCell align="right">{row.lastVisit.toLocaleString('en-US', {hour12: false})}</TableCell>
                     <TableCell align="right">{row.status ? 'blocked' : 'active'}</TableCell>
                     <TableCell padding="checkbox">
                       <Checkbox
