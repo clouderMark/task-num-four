@@ -14,7 +14,7 @@ class User {
     const { email, password, name } = req.body;
     try {
       if (!email || !password) {
-        throw new Error('Пустой имя, email или пароль');
+        throw new Error('Empty name, email or password');
       }
       const hash = await bcrypt.hash(password, 5);
       const user = await UserModel.create({ name, email, password: hash });
@@ -31,7 +31,7 @@ class User {
       const user = await UserModel.getByEmail(email);
       let compare = bcrypt.compareSync(password, user.password);
       if (!compare) {
-        throw new Error('Указан неверный пароль');
+        throw new Error('Incorrect password ');
       }
       const token = makeJwt(user.id, user.email);
       return res.json({ token });
@@ -68,7 +68,7 @@ class User {
       const { id } = req.body;
 
       if (!id.length) {
-        throw new Error('Не указаны id пользователей');
+        throw new Error('User IDs not specified');
       }
       const users = await UserModel.delete(id);
 
@@ -82,7 +82,7 @@ class User {
     try {
       const { id } = req.body;
       if (!id.length) {
-        throw new Error('Не указаны id пользователей');
+        throw new Error('User IDs not specified');
       }
       const users = await UserModel.changeStatus(id);
 

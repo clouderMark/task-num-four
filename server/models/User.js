@@ -1,6 +1,8 @@
 import { User as UserMapping } from '../models/mapping.js';
 import AppError from '../errors/AppError.js';
 
+const errorMessage = 'User not found in BD';
+
 class User {
   async getAll() {
     const users = await UserMapping.find({}, 'name lastVisit status createdAt');
@@ -10,7 +12,7 @@ class User {
   async getOne(id) {
     const user = await UserMapping.findById(id);
     if (!user) {
-      throw new Error('Пользователь не найдена в БД');
+      throw new Error(errorMessage);
     }
     return user;
   }
@@ -24,11 +26,11 @@ class User {
     );
 
     if (!user) {
-      throw new Error('Пользователь не найдена в БД');
+      throw new Error(errorMessage);
     }
 
     if (user.status.blocked) {
-      throw new Error('Пользователь заблокирован');
+      throw new Error('User is blocked');
     }
     return user;
   }
@@ -37,7 +39,7 @@ class User {
     const { name, email, password } = data;
     const check = await UserMapping.findOne({ email });
     if (check) {
-      throw new Error('Пользователь уже существует');
+      throw new Error('User already exists');
     }
     const lastVisit = this._getVisitDate();
     const status = this._setStatus(false);
@@ -55,7 +57,7 @@ class User {
     const users = await UserMapping.deleteMany({ _id });
 
     if (!users) {
-      throw new Error('Пользователь не найдена в БД');
+      throw new Error(errorMessage);
     }
 
     return users;
@@ -76,7 +78,7 @@ class User {
     const users = await UserMapping.find({_id: id}, '_id')
 
     if (!users.length) {
-      throw new Error('Пользователь не найдена в БД');
+      throw new Error(errorMessage);
     }
 
     return users;

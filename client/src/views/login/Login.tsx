@@ -67,7 +67,7 @@ const Login = () => {
       <Container sx={styles.container}>
         <Card sx={styles.card}>
           <Typography component="h3" sx={{mt: 'auto'}}>
-            {isLogin ? 'Авторизация' : 'Регистрация'}
+            {isLogin ? 'Authorization' : 'Registration'}
           </Typography>
           <Box component="form" sx={{display: 'flex', flexDirection: 'column'}} onSubmit={handleSubmit}>
             {!isLogin ? (
@@ -75,7 +75,7 @@ const Login = () => {
                 name={EName.NAME}
                 sx={{mt: 3}}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-                placeholder="Введите ваше имя..."
+                placeholder="Enter your name..."
                 error={valid[EName.NAME] === false}
                 color={valid[EName.NAME] ? 'success' : 'primary'}
               />
@@ -84,7 +84,7 @@ const Login = () => {
               name={EName.EMAIL}
               sx={{mt: 3}}
               onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
-              placeholder="Введите ваш email..."
+              placeholder="Enter your email..."
               error={valid[EName.EMAIL] === false}
               color={valid[EName.EMAIL] ? 'success' : 'primary'}
             />
@@ -92,17 +92,17 @@ const Login = () => {
               name={EName.PASSWORD}
               onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
               sx={{mt: 3}}
-              placeholder="Введите ваш пароль..."
+              placeholder="Enter your password..."
               error={valid[EName.PASSWORD] === false}
               color={valid[EName.PASSWORD] ? 'success' : 'primary'}
             />
             <Box sx={styles.box}>
               <Button type="submit" sx={styles.button} variant="outlined">
-                {isLogin ? 'Войти' : 'Регистрация'}
+                {isLogin ? 'Enter' : 'Registration'}
               </Button>
               <Typography sx={{mt: 'auto'}}>
-                {isLogin ? 'Нет аккаунта?' : 'Уже есть аккаунт?'}
-                <Link to={isLogin ? EPath.Signup : EPath.Login}>{isLogin ? ' Зарегистрируйтесь!' : ' Войдите!'}</Link>
+                {isLogin ? 'Don\'t have an account?' : 'Already have an account?'}
+                <Link to={isLogin ? EPath.Signup : EPath.Login}>{isLogin ? ' Register!' : 'Sign in!'}</Link>
               </Typography>
             </Box>
           </Box>
