@@ -3,7 +3,6 @@ import {EPath} from '../enums/EPath';
 import {useAppSelector} from '../redux/hooks';
 import {selectUser} from '../redux/userSlice';
 import Login from '../views/login/Login';
-import NotFound from '../views/NotFound';
 import Main from '../views/Main';
 
 enum ERoute {
@@ -19,7 +18,7 @@ interface IRoute {
 const publicRoutes: IRoute[] = [
   {[ERoute.Path]: EPath.Login, [ERoute.Component]: Login},
   {[ERoute.Path]: EPath.Signup, [ERoute.Component]: Login},
-  {[ERoute.Path]: EPath.NotFound, [ERoute.Component]: NotFound},
+  {[ERoute.Path]: EPath.NotFound, [ERoute.Component]: Login},
 ];
 
 const authRoutes: IRoute[] = [{[ERoute.Path]: EPath.Main, [ERoute.Component]: Main}];
