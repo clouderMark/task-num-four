@@ -63,54 +63,6 @@ class User {
     }
   }
 
-  async getOne(req, res, next) {
-    try {
-      if (!req.params.id) {
-        throw new Error('Не указан id пользователя');
-      }
-      const user = await UserModel.getOne(req.params.id);
-      res.json(user);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
-    }
-  }
-
-  async create(req, res, next) {
-    const { email, password, name } = req.body;
-    try {
-      if (!email || !password || !name) {
-        throw new Error('Пустой имя, email или пароль');
-      }
-
-      const hash = await bcrypt.hash(password, 5);
-      const user = await UserModel.create({ name, email, password: hash });
-      res.json(user);
-    } catch (e) {
-      next(AppError.badRequest(e.message));
-    }
-  }
-
-  async update(req, res, next) {
-    try {
-      if (!req.params.id) {
-        throw new Error('Не указан id пользователя');
-      }
-      let { name, email, password } = req.body;
-
-      if (password) {
-        password = await bcrypt.hash(password, 5);
-      }
-      const user = await UserModel.update(req.params.id, {
-        name,
-        email,
-        password,
-      });
-      res.json(user);
-    } catch (e) {
-      next(AppError.badRequest(e.message + 12));
-    }
-  }
-
   async delete(req, res, next) {
     try {
       const { id } = req.body;
@@ -132,12 +84,7 @@ class User {
       if (!id.length) {
         throw new Error('Не указаны id пользователей');
       }
-      const users = id.reduce(async (acc, el) => {
-        const user = await UserModel.changeStatus(el);
-        acc.push(user);
-
-        return acc;
-      });
+      const users = await UserModel.changeStatus(id);
 
       res.json(users);
     } catch (e) {

@@ -17,7 +17,11 @@ class User {
 
   async getByEmail(email) {
     const lastVisit = this._getVisitDate();
-    const user = await UserMapping.findOneAndUpdate({ email }, {lastVisit: {date: lastVisit.date}}, { returnDocument: 'after' });
+    const user = await UserMapping.findOneAndUpdate(
+      { email },
+      { lastVisit: { date: lastVisit.date } },
+      { returnDocument: 'after' }
+    );
 
     if (!user) {
       throw new Error('Пользователь не найдена в БД');
@@ -43,22 +47,8 @@ class User {
     return user;
   }
 
-  async update(id, data) {
-      const {
-        email = user.email,
-        password = user.password,
-        name = user.name,
-      } = data;
-    const user = await UserMapping.findByIdAndUpdate(id, {name, email, password}, {returnDocument: 'after'});
-    if (!user) {
-      throw new Error('Пользователь не найдена в БД');
-    }
-
-    return user;
-  }
-
-  async delete(id) {
-    const users = await UserMapping.deleteMany({_id: id});
+  async delete(_id) {
+    const users = await UserMapping.deleteMany({ _id });
 
     if (!users) {
       throw new Error('Пользователь не найдена в БД');
@@ -68,12 +58,24 @@ class User {
   }
 
   async changeStatus(id) {
-    const user = await UserMapping.findByIdAndUpdate(id, {status: !status}, {returnDocument: 'after'});
-    if (!user) {
+    id.forEach(async (el) => {
+      const user = await UserMapping.findById(el);
+
+      await UserMapping.findByIdAndUpdate(
+        el,
+        { status: { blocked: !user.status.blocked } },
+        { returnDocument: 'after' }
+      );
+
+    });
+
+    const users = await UserMapping.find({_id: id}, '_id')
+
+    if (!users.length) {
       throw new Error('Пользователь не найдена в БД');
     }
 
-    return user;
+    return users;
   }
 
   _getVisitDate() {

@@ -23,7 +23,7 @@ import {
 const Main = () => {
   const dispatch = useAppDispatch();
   const {token} = useSelector(selectUser);
-  const {isDelete, selected, isChange} = useSelector(selectTable);
+  const {isDelete, selected, statuses, isChange} = useSelector(selectTable);
   const [getData, {data, isError, error}] = useGetAllUsersMutation();
   const [deleteUsers, {isSuccess: isDeleteSuccess}] = useDeleteUsersMutation();
   const [changeStatuses, {isSuccess: isChangeSuccess}] = useChangeUsersStatusMutation();
@@ -55,7 +55,7 @@ const Main = () => {
 
   useEffect(() => {
     if (token && isChange) {
-      changeStatuses({token, id: selected});
+      changeStatuses({token, id: statuses});
     }
   }, [isChange]);
 

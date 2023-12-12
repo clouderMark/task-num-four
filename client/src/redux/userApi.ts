@@ -1,23 +1,7 @@
 import {createApi, fetchBaseQuery, BaseQueryFn, FetchArgs} from '@reduxjs/toolkit/query/react';
-import {ICustomError, IData, IDelete, ILogin, IUser} from '../interfaces/interfaces';
+import {IAct, ICustomError, IData, IDelete, ILogin, ISignup, IToken, IUser} from '../interfaces/interfaces';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
-
-interface IIds {
-  id: string[];
-}
-
-interface IToken {
-  token: string;
-}
-
-interface ISignup extends ILogin {
-  name: string;
-}
-
-interface IUpdate extends ILogin, IToken {}
-
-interface IAct extends IToken, IIds {}
 
 export const userApi = createApi({
   reducerPath: 'userApi',
@@ -62,13 +46,6 @@ export const userApi = createApi({
           id: el._id!,
         })),
     }),
-    updateUser: builder.mutation<IUser, IUpdate>({
-      query: (data) => ({
-        url: `/update/:${data._id}`,
-        method: 'PUT',
-        headers: {authorization: `Bearer ${data.token}`},
-      }),
-    }),
     deleteUsers: builder.mutation<IDelete, IAct>({
       query: (data) => ({
         url: '/delete',
@@ -77,7 +54,7 @@ export const userApi = createApi({
         body: {id: data.id},
       }),
     }),
-    changeUsersStatus: builder.mutation<IUser[], IAct>({
+    changeUsersStatus: builder.mutation<{_id: string}[], IAct>({
       query: (data) => ({
         url: '/status',
         method: 'PUT',
@@ -93,7 +70,6 @@ export const {
   useLoginUserMutation,
   useCheckUserMutation,
   useGetAllUsersMutation,
-  useUpdateUserMutation,
   useDeleteUsersMutation,
   useChangeUsersStatusMutation,
 } = userApi;
