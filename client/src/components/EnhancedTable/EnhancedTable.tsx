@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {ActionCreatorWithPayload} from '@reduxjs/toolkit';
 import {
   Box,
   Table,
@@ -22,46 +23,34 @@ import {
   setSelectedStatus,
 } from '../../redux/tableSlice';
 import {useAppDispatch} from '../../redux/hooks';
+import {isSelected} from './isSelected';
 
 function EnhancedTable() {
   const dispatch = useAppDispatch();
   const {selected, page, rowsPerPage, statuses} = useSelector(selectTable);
   const rows = useSelector(selectSortRows, shallowEqual);
 
-  const handleClick = (id: string) => {
-    const selectedIndex = selected.indexOf(id);
+  const handleClick = (
+    id: string,
+    state: string[],
+    action: ActionCreatorWithPayload<string[]>,
+    reset: ActionCreatorWithPayload<string[]>,
+  ) => {
+    const selectedIndex = state.indexOf(id);
     let newSelected: string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = [...selected, id];
+      newSelected = [...state, id];
     } else if (selectedIndex === 0) {
-      newSelected = [...selected.slice(1)];
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = selected.slice(0, -1);
+      newSelected = [...state.slice(1)];
+    } else if (selectedIndex === state.length - 1) {
+      newSelected = state.slice(0, -1);
     } else if (selectedIndex > 0) {
-      newSelected = [...selected.slice(0, selectedIndex), ...selected.slice(selectedIndex + 1)];
+      newSelected = [...state.slice(0, selectedIndex), ...state.slice(selectedIndex + 1)];
     }
 
-    dispatch(setSelected(newSelected));
-    dispatch(setSelectedStatus([]));
-  };
-
-  const handleStatusChange = (id: string) => {
-    const selectedIndex = statuses.indexOf(id);
-    let newSelected: string[] = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...statuses, id];
-    } else if (selectedIndex === 0) {
-      newSelected = [...statuses.slice(1)];
-    } else if (selectedIndex === statuses.length - 1) {
-      newSelected = statuses.slice(0, -1);
-    } else if (selectedIndex > 0) {
-      newSelected = [...statuses.slice(0, selectedIndex), ...statuses.slice(selectedIndex + 1)];
-    }
-
-    dispatch(setSelectedStatus(newSelected));
-    dispatch(setSelected([]));
+    dispatch(action(newSelected));
+    dispatch(reset([]));
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -72,9 +61,6 @@ function EnhancedTable() {
     dispatch(setRowsPerPage(+event.target.value));
     dispatch(setPage(0));
   };
-
-  const isSelected = (id: string) => selected.indexOf(id) !== -1;
-  const isStatusItemSelected = (id: string) => statuses.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -88,8 +74,8 @@ function EnhancedTable() {
             <EnhancedTableHead />
             <TableBody>
               {rows.map((row, index) => {
-                const isItemSelected = isSelected(row.id);
-                const isStatusSelected = isStatusItemSelected(row.id);
+                const isItemSelected = isSelected(row.id, selected);
+                const isStatusSelected = isSelected(row.id, statuses);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
@@ -104,7 +90,7 @@ function EnhancedTable() {
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        onClick={() => handleClick(row.id)}
+                        onClick={() => handleClick(row.id, selected, setSelected, setSelectedStatus)}
                         color="primary"
                         checked={isItemSelected}
                         inputProps={{
@@ -120,7 +106,7 @@ function EnhancedTable() {
                     <TableCell align="right">{row.status ? 'blocked' : 'active'}</TableCell>
                     <TableCell padding="checkbox">
                       <Checkbox
-                        onClick={() => handleStatusChange(row.id)}
+                        onClick={() => handleClick(row.id, statuses, setSelectedStatus, setSelected)}
                         color="primary"
                         checked={isStatusSelected}
                         inputProps={{

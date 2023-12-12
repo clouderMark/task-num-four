@@ -15,3 +15,10 @@ export enum EOrder {
   ASC = 'asc',
   DESC = 'desc',
 }
+
+export interface HeadCell {
+  disablePadding: boolean;
+  id: keyof IData;
+  label: string;
+  numeric: boolean;
+}

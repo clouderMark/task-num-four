@@ -1,44 +1,12 @@
 import {useSelector} from 'react-redux';
+import {ActionCreatorWithPayload} from '@reduxjs/toolkit';
 import {Box, Checkbox, TableCell, TableHead, TableRow, TableSortLabel} from '@mui/material';
 import {visuallyHidden} from '@mui/utils';
 import {IData} from '../../interfaces/interfaces';
 import {selectTable, setOrder, setOrderBy, setSelected, setSelectedStatus} from '../../redux/tableSlice';
 import {useAppDispatch} from '../../redux/hooks';
 import {EOrder} from './types';
-
-interface HeadCell {
-  disablePadding: boolean;
-  id: keyof IData;
-  label: string;
-  numeric: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: "User's names",
-  },
-  {
-    id: 'createdAt',
-    numeric: true,
-    disablePadding: false,
-    label: 'Created at',
-  },
-  {
-    id: 'lastVisit',
-    numeric: true,
-    disablePadding: false,
-    label: 'Updatet at',
-  },
-  {
-    id: 'status',
-    numeric: true,
-    disablePadding: false,
-    label: 'Status',
-  },
-];
+import {headCells} from './headCells';
 
 function EnhancedTableHead() {
   const dispatch = useAppDispatch();
@@ -47,26 +15,19 @@ function EnhancedTableHead() {
   const statusSelected = statuses.length;
   const rowCount = rows.length;
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectAllClick = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    action: ActionCreatorWithPayload<string[]>,
+    reset: ActionCreatorWithPayload<string[]>,
+  ) => {
     if (event.target.checked) {
-      dispatch(setSelected(allId));
-      dispatch(setSelectedStatus([]));
+      dispatch(action(allId));
+      dispatch(reset([]));
 
       return;
     }
 
-    dispatch(setSelected([]));
-  };
-
-  const handleSelectAllStatus = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      dispatch(setSelectedStatus(allId));
-      dispatch(setSelected([]));
-
-      return;
-    }
-
-    dispatch(setSelectedStatus([]));
+    dispatch(action([]));
   };
 
   const handleRequestSort = (property: keyof IData) => () => {
@@ -84,7 +45,7 @@ function EnhancedTableHead() {
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
-            onChange={handleSelectAllClick}
+            onChange={(e) => handleSelectAllClick(e, setSelected, setSelectedStatus)}
             inputProps={{
               'aria-label': 'select all users',
             }}
@@ -116,7 +77,7 @@ function EnhancedTableHead() {
             color="primary"
             indeterminate={statusSelected > 0 && statusSelected < rowCount}
             checked={rowCount > 0 && statusSelected === rowCount}
-            onChange={handleSelectAllStatus}
+            onChange={(e) => handleSelectAllClick(e, setSelectedStatus, setSelected)}
             inputProps={{
               'aria-label': "select all user's status",
             }}
