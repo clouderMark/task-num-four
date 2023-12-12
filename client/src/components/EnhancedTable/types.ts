@@ -1,6 +1,6 @@
 import {IData} from '../../interfaces/interfaces';
 
-export type Order = 'asc' | 'desc';
+export type Order = EOrder.ASC | EOrder.DESC;
 
 export interface EnhancedTableProps {
   numSelected: number;
@@ -9,4 +9,9 @@ export interface EnhancedTableProps {
   order: Order;
   orderBy: string;
   rowCount: number;
+}
+
+export enum EOrder {
+  ASC = 'asc',
+  DESC = 'desc',
 }

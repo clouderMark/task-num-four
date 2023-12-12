@@ -12,42 +12,21 @@ import {
 } from '@mui/material/';
 import {shallowEqual, useSelector} from 'react-redux';
 import EnhancedTableHead from './EnhancedTableHead';
-import {IData} from '../../interfaces/interfaces';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 import {
-  selectRows,
+  selectSortRows,
   selectTable,
-  setOrder,
-  setOrderBy,
   setPage,
   setRowsPerPage,
   setSelected,
+  setSelectedStatus,
 } from '../../redux/tableSlice';
 import {useAppDispatch} from '../../redux/hooks';
 
 function EnhancedTable() {
   const dispatch = useAppDispatch();
-  const {selected, order, orderBy, page, rowsPerPage} = useSelector(selectTable);
-  const rows = useSelector(selectRows, shallowEqual);
-
-  const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof IData) => {
-    const isAsc = orderBy === property && order === 'asc';
-
-    dispatch(setOrder(isAsc ? 'desc' : 'asc'));
-    dispatch(setOrderBy(property));
-  };
-
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
-
-      dispatch(setSelected(newSelected));
-
-      return;
-    }
-
-    dispatch(setSelected([]));
-  };
+  const {selected, page, rowsPerPage, statuses} = useSelector(selectTable);
+  const rows = useSelector(selectSortRows, shallowEqual);
 
   const handleClick = (id: string) => {
     const selectedIndex = selected.indexOf(id);
@@ -64,6 +43,25 @@ function EnhancedTable() {
     }
 
     dispatch(setSelected(newSelected));
+    dispatch(setSelectedStatus([]));
+  };
+
+  const handleStatusChange = (id: string) => {
+    const selectedIndex = statuses.indexOf(id);
+    let newSelected: string[] = [];
+
+    if (selectedIndex === -1) {
+      newSelected = [...statuses, id];
+    } else if (selectedIndex === 0) {
+      newSelected = [...statuses.slice(1)];
+    } else if (selectedIndex === statuses.length - 1) {
+      newSelected = statuses.slice(0, -1);
+    } else if (selectedIndex > 0) {
+      newSelected = [...statuses.slice(0, selectedIndex), ...statuses.slice(selectedIndex + 1)];
+    }
+
+    dispatch(setSelectedStatus(newSelected));
+    dispatch(setSelected([]));
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -76,6 +74,7 @@ function EnhancedTable() {
   };
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
+  const isStatusItemSelected = (id: string) => statuses.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -86,23 +85,16 @@ function EnhancedTable() {
         <EnhancedTableToolbar />
         <TableContainer>
           <Table sx={{minWidth: 750}} aria-labelledby="tableTitle" size="medium">
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
+            <EnhancedTableHead />
             <TableBody>
               {rows.map((row, index) => {
                 const isItemSelected = isSelected(row.id);
+                const isStatusSelected = isStatusItemSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
                   <TableRow
                     hover
-                    onClick={() => handleClick(row.id)}
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
@@ -112,6 +104,7 @@ function EnhancedTable() {
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
+                        onClick={() => handleClick(row.id)}
                         color="primary"
                         checked={isItemSelected}
                         inputProps={{
@@ -125,6 +118,16 @@ function EnhancedTable() {
                     <TableCell align="right">{row.createdAt.toDateString()}</TableCell>
                     <TableCell align="right">{row.lastVisit.toDateString()}</TableCell>
                     <TableCell align="right">{row.status ? 'blocked' : 'active'}</TableCell>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        onClick={() => handleStatusChange(row.id)}
+                        color="primary"
+                        checked={isStatusSelected}
+                        inputProps={{
+                          'aria-labelledby': labelId,
+                        }}
+                      />
+                    </TableCell>
                   </TableRow>
                 );
               })}

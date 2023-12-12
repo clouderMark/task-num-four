@@ -1,19 +1,32 @@
 import {useEffect} from 'react';
 import {Container} from '@mui/material';
 import {useSelector} from 'react-redux';
-import {useCheckUserMutation, useDeleteUsersMutation, useGetAllUsersMutation} from '../redux/userApi';
+import {
+  useChangeUsersStatusMutation,
+  useCheckUserMutation,
+  useDeleteUsersMutation,
+  useGetAllUsersMutation,
+} from '../redux/userApi';
 import {selectUser} from '../redux/userSlice';
 import EnhancedTable from '../components/EnhancedTable/EnhancedTable';
 import {useAppDispatch} from '../redux/hooks';
 import {showAlert} from '../redux/alertSlice';
-import {selectTable, setDeleteItems, setRows, setSelected} from '../redux/tableSlice';
+import {
+  selectTable,
+  setChangeStatus,
+  setDeleteItems,
+  setRows,
+  setSelected,
+  setSelectedStatus,
+} from '../redux/tableSlice';
 
 const Main = () => {
   const dispatch = useAppDispatch();
   const {token} = useSelector(selectUser);
-  const {isDelete, selected} = useSelector(selectTable);
+  const {isDelete, selected, isChange} = useSelector(selectTable);
   const [getData, {data, isError, error}] = useGetAllUsersMutation();
   const [deleteUsers, {isSuccess: isDeleteSuccess}] = useDeleteUsersMutation();
+  const [changeStatuses, {isSuccess: isChangeSuccess}] = useChangeUsersStatusMutation();
   const [checkUser] = useCheckUserMutation();
 
   useEffect(() => {
@@ -41,9 +54,25 @@ const Main = () => {
   }, [isDelete]);
 
   useEffect(() => {
+    if (token && isChange) {
+      changeStatuses({token, id: selected});
+    }
+  }, [isChange]);
+
+  useEffect(() => {
+    if (isChangeSuccess) {
+      dispatch(setSelectedStatus([]));
+      dispatch(setChangeStatus(false));
+      if (token) {
+        checkUser(token);
+      }
+    }
+  }, [isChangeSuccess]);
+
+  useEffect(() => {
     if (isDeleteSuccess) {
       dispatch(setSelected([]));
-      dispatch(setDeleteItems(true));
+      dispatch(setDeleteItems(false));
       if (token) {
         checkUser(token);
       }

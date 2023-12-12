@@ -1,7 +1,7 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import type {RootState} from './store';
 import {IData} from '../interfaces/interfaces';
-import {Order} from '../components/EnhancedTable/types';
+import {EOrder, Order} from '../components/EnhancedTable/types';
 import {getComparator} from '../components/EnhancedTable/getComparator';
 
 interface IInitialState {
@@ -12,16 +12,22 @@ interface IInitialState {
   page: number;
   rowsPerPage: number;
   isDelete: boolean;
+  statuses: string[];
+  allId: string[];
+  isChange: boolean;
 }
 
 const initialState: IInitialState = {
   rows: [],
   selected: [],
-  order: 'asc',
+  order: EOrder.ASC,
   orderBy: 'name',
   page: 0,
   rowsPerPage: 5,
   isDelete: false,
+  statuses: [],
+  isChange: false,
+  allId: [],
 };
 
 export const tableSlice = createSlice({
@@ -30,6 +36,7 @@ export const tableSlice = createSlice({
   reducers: {
     setRows: (state, action: PayloadAction<IData[]>) => {
       state.rows = action.payload;
+      state.allId = action.payload.map((n) => n.id);
     },
     setSelected: (state, action: PayloadAction<string[]>) => {
       state.selected = action.payload;
@@ -49,12 +56,28 @@ export const tableSlice = createSlice({
     setDeleteItems: (state, action: PayloadAction<boolean>) => {
       state.isDelete = action.payload;
     },
+    setSelectedStatus: (state, action: PayloadAction<string[]>) => {
+      state.statuses = action.payload;
+    },
+    setChangeStatus: (state, action: PayloadAction<boolean>) => {
+      state.isChange = action.payload;
+    },
   },
 });
 
 export const selectTable = (state: RootState) => state.table;
-export const {setRows, setSelected, setOrder, setOrderBy, setPage, setRowsPerPage, setDeleteItems} = tableSlice.actions;
-export const selectRows = (state: RootState) =>
+export const {
+  setRows,
+  setSelected,
+  setOrder,
+  setOrderBy,
+  setPage,
+  setRowsPerPage,
+  setDeleteItems,
+  setSelectedStatus,
+  setChangeStatus,
+} = tableSlice.actions;
+export const selectSortRows = (state: RootState) =>
   [...state.table.rows]
     .sort(getComparator(state.table.order, state.table.orderBy))
     .slice(
