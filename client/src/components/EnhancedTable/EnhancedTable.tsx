@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
   Checkbox,
+  Switch,
 } from '@mui/material/';
 import {shallowEqual, useSelector} from 'react-redux';
 import EnhancedTableHead from './EnhancedTableHead';
@@ -24,6 +25,7 @@ import {
 } from '../../redux/tableSlice';
 import {useAppDispatch} from '../../redux/hooks';
 import {isSelected} from './isSelected';
+// import SwitchStatus from './SwitchStatus';
 
 function EnhancedTable() {
   const dispatch = useAppDispatch();
@@ -97,15 +99,24 @@ function EnhancedTable() {
                     </TableCell>
                     <TableCell align="right">{row.createdAt.toLocaleString('en-US', {hour12: false})}</TableCell>
                     <TableCell align="right">{row.lastVisit.toLocaleString('en-US', {hour12: false})}</TableCell>
-                    <TableCell align="right">{row.status ? 'blocked' : 'active'}</TableCell>
+                    <TableCell align="right">
+                      {(() => {
+                        let result = '';
+
+                        if (isStatusSelected) {
+                          result = row.status ? 'active' : 'blocked';
+                        } else {
+                          result = row.status ? 'blocked' : 'active';
+                        }
+
+                        return result;
+                      })()}
+                    </TableCell>
                     <TableCell padding="checkbox">
-                      <Checkbox
-                        onClick={() => handleClick(row.id, statuses, setSelectedStatus)}
-                        color="primary"
-                        checked={isStatusSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
+                      <Switch
+                        onChange={() => handleClick(row.id, statuses, setSelectedStatus)}
+                        checked={isStatusSelected ? row.status : !row.status}
+                        color="warning"
                       />
                     </TableCell>
                   </TableRow>
