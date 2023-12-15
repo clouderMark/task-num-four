@@ -93,6 +93,7 @@ const Login = () => {
               onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
               sx={{mt: 3}}
               placeholder="Enter your password..."
+              type="password"
               error={valid[EName.PASSWORD] === false}
               color={valid[EName.PASSWORD] ? 'success' : 'primary'}
             />
@@ -101,7 +102,7 @@ const Login = () => {
                 {isLogin ? 'Enter' : 'Registration'}
               </Button>
               <Typography sx={{mt: 'auto'}}>
-                {isLogin ? 'Don\'t have an account?' : 'Already have an account?'}
+                {isLogin ? "Don't have an account?" : 'Already have an account? '}
                 <Link to={isLogin ? EPath.Signup : EPath.Login}>{isLogin ? ' Register!' : 'Sign in!'}</Link>
               </Typography>
             </Box>
