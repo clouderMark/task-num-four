@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {Box, LinearProgress} from '@mui/material/';
-import {theme} from '../styles/theme';
 import {useAppSelector} from '../redux/hooks';
 import {selectLoader} from '../redux/loaderSlice';
 
@@ -36,9 +35,10 @@ const Loader = () => {
               backgroundColor: 'transparent',
             },
             '& .MuiLinearProgress-barColorPrimary': {
-              backgroundColor: theme.palette.first.main,
+              backgroundColor: 'orange',
             },
             position: 'fixed',
+            zIndex: 9999,
           }}
         >
           <LinearProgress variant="determinate" value={progress} />
