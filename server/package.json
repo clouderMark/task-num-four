@@ -21,9 +21,6 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^6.3.0",
     "mongoose": "^8.0.2",
-    "pg": "^8.7.3",
-    "pg-hstore": "^2.3.4",
-    "sequelize": "^6.21.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
